@@ -1,0 +1,29 @@
+name: build & format
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+env:
+  CARGO_TERM_COLOR: always
+  TOOLCHAIN: stable
+
+jobs:
+  build_and_test:
+    name: build & format
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v3
+      - name: update rust
+        run: rustup update ${{ env.TOOLCHAIN }} && rustup default ${{ env.TOOLCHAIN }}
+      - name: build
+        run: cargo build --verbose
+      - name: check formatting
+        run: cargo fmt --all -- --check
