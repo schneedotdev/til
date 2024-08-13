@@ -1,4 +1,8 @@
-use std::{fs::OpenOptions, io::Write};
+use std::{
+    fs::{self, OpenOptions},
+    io::Write,
+    path::Path,
+};
 
 use chrono::{Datelike, Local};
 use clap::{Args, Parser, Subcommand};
@@ -51,11 +55,22 @@ impl Entry {
         let date = format!("{}-{}-{}", time.month(), time.day(), time.year());
 
         // TODO: path should point to a globally accessible route.
-        if self.title.is_empty() {
-            format!("./notes/{}.csv", date)
+        let path = if self.title.is_empty() {
+            format!("./notes/{}/default.csv", date)
         } else {
-            format!("./notes/{}-{}.csv", date, self.title)
+            format!("./notes/{}/{}.csv", date, self.title)
+        };
+
+        let directory = Path::new(&path)
+            .parent()
+            .expect("cannot determine parent directory from path");
+
+        if !directory.exists() {
+            fs::create_dir_all(directory)
+                .unwrap_or_else(|err| panic!("cannot create directory {:?}: {}", directory, err));
         }
+
+        path
     }
 
     fn retrieve_from(_search_params: SearchParams) {
