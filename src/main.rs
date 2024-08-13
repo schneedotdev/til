@@ -46,7 +46,7 @@ impl Entry {
             .open(self.build_path())
             .expect("cannot open or create file");
 
-        file.write_all(format!("{}\n", self.message).as_bytes())
+        file.write_all(format!("- {}\n", self.message).as_bytes())
             .expect("cannot write to file");
     }
 
