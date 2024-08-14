@@ -1,4 +1,5 @@
 mod error;
+mod main_tests;
 
 use std::{
     fs::{self, OpenOptions},
