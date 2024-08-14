@@ -1,11 +1,20 @@
+mod error;
+
 use std::{
     fs::{self, OpenOptions},
     io::Write,
-    path::Path,
+    path::{Path, PathBuf},
 };
 
 use chrono::{Datelike, Local};
 use clap::{Args, Parser, Subcommand};
+use error::Error;
+
+const PATH_FROM_ROOT: &str = ".til/notes";
+
+fn find_root_dir() -> Option<PathBuf> {
+    Some(Path::new(&dirs::home_dir()?).join(PATH_FROM_ROOT))
+}
 
 #[derive(Parser, Debug)]
 #[command(name = "til", version = "0.1.0", about = "✨ 'today i learned' is used to keep track of the important sh%t you want to remember ✨", long_about = None, arg_required_else_help = true)]
@@ -33,44 +42,48 @@ struct Entry {
     #[clap(short, long)]
     message: String,
 
-    #[clap(short, long, default_value = "")]
+    #[clap(short, long, default_value = "default")]
     title: String,
 }
 
 impl Entry {
-    fn write(&self) {
+    fn write(&self) -> error::Result<()> {
+        let path = self.build_path().map_err(|_| Error::CannotBuildPath)?;
+
         let mut file = OpenOptions::new()
             .write(true)
             .append(true)
             .create(true)
-            .open(self.build_path())
+            .open(path)
             .expect("cannot open or create file");
 
         file.write_all(format!("- {}\n", self.message).as_bytes())
             .expect("cannot write to file");
+
+        Ok(())
     }
 
-    fn build_path(&self) -> String {
+    fn build_path(&self) -> error::Result<PathBuf> {
         let time = Local::now();
         let date = format!("{}-{}-{}", time.month(), time.day(), time.year());
 
-        // TODO: path should point to a globally accessible route.
-        let path = if self.title.is_empty() {
-            format!("./notes/{}/default.csv", date)
-        } else {
-            format!("./notes/{}/{}.csv", date, self.title)
+        let root_dir = find_root_dir().ok_or(Error::CannotFindDir("root".to_owned()))?;
+        let path = {
+            let mut path = Path::new(&root_dir).join(&date).join(&self.title);
+            path.set_extension("md");
+            path
         };
 
         let directory = Path::new(&path)
             .parent()
-            .expect("cannot determine parent directory from path");
+            .ok_or(Error::CannotFindDir("parent".to_owned()))?;
 
         if !directory.exists() {
             fs::create_dir_all(directory)
-                .unwrap_or_else(|err| panic!("cannot create directory {:?}: {}", directory, err));
+                .map_err(|_| Error::CannotCreateDir(path.display().to_string()))?;
         }
 
-        path
+        Ok(path)
     }
 
     fn retrieve_from(_search_params: SearchParams) {
@@ -86,13 +99,14 @@ struct SearchParams {
     title: Option<String>,
 }
 
-fn main() {
+fn main() -> error::Result<()> {
     let args = Cli::parse();
 
-    if let Some(command) = args.command {
-        match command {
-            Command::That { entry } => entry.write(),
+    match args.command {
+        Some(command) => Ok(match command {
+            Command::That { entry } => entry.write()?,
             Command::On { search_params } => Entry::retrieve_from(search_params),
-        }
+        }),
+        None => Err(Error::CannotProcessArgs),
     }
 }
