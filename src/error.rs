@@ -17,14 +17,14 @@ pub(crate) enum Error {
 pub type Result<T> = std::result::Result<T, Error>;
 
 impl Error {
-    fn message(&self) -> Message {
+    pub(crate) fn message(&self) -> Message {
         match self {
             Error::CannotBuildPath => "cannot construct path".to_owned(),
             Error::CannotFindDir(dir) => format!("cannot find {} directory", dir),
             Error::CannotCreateDir(dir) => format!("cannot create {} directory", dir),
             Error::CannotProcessArgs => "cannot process command-line arguments".to_owned(),
             Error::Custom(msg) => msg.to_owned(),
-            Error::Default => "default error".to_owned(),
+            Error::Default => "something wrong happened".to_owned(),
         }
     }
 }
