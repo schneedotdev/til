@@ -37,6 +37,12 @@ impl Display for Error {
     }
 }
 
+impl From<&str> for Error {
+    fn from(value: &str) -> Self {
+        Error::Custom(value.to_string())
+    }
+}
+
 impl From<String> for Error {
     fn from(value: String) -> Self {
         Error::Custom(value)

@@ -18,7 +18,7 @@ mod tests {
                 Error::CannotProcessArgs,
                 "cannot process command-line arguments",
             ),
-            (String::from("custom message").into(), "custom message"),
+            ("custom message".into(), "custom message"),
             (Error::default(), "something wrong happened"),
         ];
 
