@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### 🚀 Features
 
-- "that" command used to store note entries
+- Added "that" command to store note entries
 - Ci
 - Create new directory if does not exist
 - New notes should be bullet points
