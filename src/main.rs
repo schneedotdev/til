@@ -26,12 +26,12 @@ struct Cli {
 
 #[derive(Subcommand, Debug)]
 enum Command {
-    /// store information that you learned today
+    /// stores information that you learned today
     That {
         #[clap(flatten)]
         entry: Entry,
     },
-    /// recall information that you learned on a specific day
+    /// recalls information that you learned on a specific day
     On {
         #[clap(flatten)]
         search_params: SearchParams,
