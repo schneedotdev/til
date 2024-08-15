@@ -32,4 +32,4 @@ jobs:
       - name: check formatting
         run: just format --check
       - name: pre-publish
-        run: just pre-publish
+        run: cargo publish --dry-run
