@@ -3,6 +3,7 @@ name = "til"
 version = "0.1.0"
 edition = "2021"
 authors = ["Brian Schnee"]
+license = "Unlicense OR MIT"
 description = "til is a Rust CLI application that's used to keep track of the important sh%t you want to remember."
 repository = "https://github.com/schneedotdev/til"
 include = ["src/**/*", "README.md", "CHANGELOG.md"]
