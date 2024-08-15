@@ -1,4 +1,4 @@
-name: build & format
+name: ci
 
 on:
   pull_request:
@@ -13,8 +13,8 @@ env:
   TOOLCHAIN: stable
 
 jobs:
-  build_and_test:
-    name: build & format
+  ci:
+    name: build, test, format, & pre-publish
     timeout-minutes: 10
     runs-on: ubuntu-latest
 
@@ -23,7 +23,13 @@ jobs:
         uses: actions/checkout@v3
       - name: update rust
         run: rustup update ${{ env.TOOLCHAIN }} && rustup default ${{ env.TOOLCHAIN }}
+      - name: install just
+        uses: taiki-e/install-action@just
       - name: build
-        run: cargo build --verbose
+        run: cargo build --release --verbose
+      - name: test
+        run: cargo test --verbose
       - name: check formatting
-        run: cargo fmt --all -- --check
+        run: just format --check
+      - name: pre-publish
+        run: just pre-publish
