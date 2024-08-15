@@ -52,7 +52,6 @@ impl Entry {
         let path = self.build_path().map_err(|_| Error::CannotBuildPath)?;
 
         let mut file = OpenOptions::new()
-            .write(true)
             .append(true)
             .create(true)
             .open(path)
@@ -104,10 +103,14 @@ fn main() -> error::Result<()> {
     let args = Cli::parse();
 
     match args.command {
-        Some(command) => Ok(match command {
-            Command::That { entry } => entry.write()?,
-            Command::On { search_params } => Entry::retrieve_from(search_params),
-        }),
+        Some(command) => {
+            match command {
+                Command::That { entry } => entry.write()?,
+                Command::On { search_params } => Entry::retrieve_from(search_params),
+            };
+
+            Ok(())
+        }
         None => Err(Error::CannotProcessArgs),
     }
 }
