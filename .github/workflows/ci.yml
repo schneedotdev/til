@@ -4,9 +4,7 @@ on:
   pull_request:
     branches:
       - main
-  push:
-    branches:
-      - main
+      - "**"
 
 env:
   CARGO_TERM_COLOR: always
@@ -17,6 +15,10 @@ jobs:
     name: build, test, format, & pre-publish
     timeout-minutes: 10
     runs-on: ubuntu-latest
+
+    # fail on rust warnings
+    env:
+      RUSTFLAGS: "-D warnings"
 
     steps:
       - name: checkout code
