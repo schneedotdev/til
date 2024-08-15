@@ -2,8 +2,10 @@
 name = "til"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+authors = ["Brian Schnee"]
+description = "til is a Rust CLI application that's used to keep track of the important sh%t you want to remember."
+repository = "https://github.com/schneedotdev/til"
+include = ["src/**/*", "README.md", "CHANGELOG.md"]
 
 [dependencies]
 chrono = "0.4.38"
