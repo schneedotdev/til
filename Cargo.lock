@@ -348,7 +348,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "til"
+name = "today-i-learned"
 version = "0.1.0"
 dependencies = [
  "chrono",
