@@ -1,0 +1,16 @@
+[workspace]
+[changelog]
+commit_parsers = [
+  { message = "^feat", group = "added" },
+  { message = "^deprecated", group = "deprecated" },
+  { message = "^doc", group = "docs" },
+  { message = "^refactor", group = "refactor" },
+  { message = "^fix", group = "fixed" },
+  { message = "^remove", group = "removed" },
+  { message = "^security", group = "security" },
+  { message = "^test", group = "testing" },
+  { message = "^chore(deps)", group = "dependencies" },
+  { message = "^chore", skip = true },
+  { message = "^ci", skip = true },
+  { message = "^.*", skip = true },
+]
