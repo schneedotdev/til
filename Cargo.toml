@@ -8,6 +8,10 @@ description = "til is a Rust CLI application that's used to keep track of the im
 repository = "https://github.com/schneedotdev/til"
 include = ["src/**/*", "README.md", "CHANGELOG.md"]
 
+[[bin]]
+name = "til"
+path = "src/main.rs"
+
 [dependencies]
 chrono = "0.4.38"
 clap = { version = "4.5.14", features = ["derive"] }
