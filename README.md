@@ -1,4 +1,4 @@
-# ✨ til - today i learned ✨
+# 📚 today i learned 📚
 
 til is a command-line application designed to help you keep track of the important sh%t you want to remember. Whether it's a key insight from your work, a useful programming trick, or a valuable life lesson, this app helps you store and retrieve your notes in a friendly manner.
 
