@@ -11,6 +11,7 @@ pub(crate) enum Error {
     CannotProcessArgs,
     CannotOpenOrCreatePath(PathBuf),
     CannotWriteToFile(PathBuf),
+    CannotParseMetaData,
     CannotReadFile(PathBuf),
     Custom(Message),
     #[default]
@@ -39,6 +40,7 @@ impl Display for Error {
             Error::CannotReadFile(file) => {
                 f.write_fmt(format_args!("cannot read file {}", file.display()))
             }
+            Error::CannotParseMetaData => f.write_str("cannot parse metadata"),
             Error::Custom(msg) => f.write_str(msg),
             Error::Default => f.write_str("something wrong happened"),
         }
@@ -84,6 +86,10 @@ mod tests {
             (
                 Error::CannotWriteToFile("src/test".into()),
                 "cannot write to src/test",
+            ),
+            (
+                Error::CannotParseMetaData,
+                "cannot parse metadata",
             ),
             (
                 Error::CannotReadFile("src/test".into()),
