@@ -25,8 +25,8 @@ struct Cli {
 
 #[derive(Subcommand, Debug)]
 enum Command {
-    /// stores a note entry
-    That {
+    /// Add a new note entry
+    Add {
         #[clap(flatten)]
         entry: Entry,
     },
@@ -39,8 +39,7 @@ enum Command {
 
 #[derive(Args, Debug)]
 struct Entry {
-    #[clap(short, long)]
-    message: String,
+    content: String,
 
     #[clap(short, long, default_value = "default")]
     title: String,
@@ -56,7 +55,7 @@ impl Entry {
             .open(&path)
             .map_err(|_| Error::CannotOpenOrCreatePath(path.clone()))?;
 
-        file.write_all(format!("- {}\n", self.message).as_bytes())
+        file.write_all(format!("- {}\n", self.content).as_bytes())
             .map_err(|_| Error::CannotWriteToFile(path.clone()))
     }
 
@@ -102,7 +101,7 @@ fn main() -> error::Result<()> {
     match args.command {
         Some(command) => {
             match command {
-                Command::That { entry } => entry.write()?,
+                Command::Add { entry } => entry.write()?,
                 Command::On { search_params } => Entry::retrieve_from(search_params),
             };
 
