@@ -42,9 +42,6 @@ enum Command {
 struct Entry {
     content: String,
 
-    #[clap(short, long, default_value = "default")]
-    title: String,
-
     #[clap(long, use_value_delimiter = true, default_value = "")]
     tags: Vec<String>,
 }
@@ -81,7 +78,7 @@ impl Entry {
 
         let root_dir = find_root_dir().ok_or(Error::CannotFindDir("root".to_owned()))?;
         let path = {
-            let mut path = Path::new(&root_dir).join(&date).join(&self.title);
+            let mut path = Path::new(&root_dir).join(&date).join("default");
             path.set_extension("md");
             path
         };
@@ -124,12 +121,11 @@ impl Entry {
     fn generate_meta(&self) -> String {
         format!(
             r#"---
-title: "{}"
+title: "default"
 tags: [{}]
 ---
 
 "#,
-            self.title,
             self.tags.join(", ")
         )
     }
