@@ -11,6 +11,7 @@ pub(crate) enum Error {
     CannotProcessArgs,
     CannotOpenOrCreatePath(PathBuf),
     CannotWriteToFile(PathBuf),
+    CannotReadFile(PathBuf),
     Custom(Message),
     #[default]
     Default,
@@ -34,6 +35,9 @@ impl Display for Error {
             }
             Error::CannotWriteToFile(file) => {
                 f.write_fmt(format_args!("cannot write to {}", file.display()))
+            }
+            Error::CannotReadFile(file) => {
+                f.write_fmt(format_args!("cannot read file {}", file.display()))
             }
             Error::Custom(msg) => f.write_str(msg),
             Error::Default => f.write_str("something wrong happened"),
@@ -80,6 +84,10 @@ mod tests {
             (
                 Error::CannotWriteToFile("src/test".into()),
                 "cannot write to src/test",
+            ),
+            (
+                Error::CannotReadFile("src/test".into()),
+                "cannot read file src/test",
             ),
             ("custom message".into(), "custom message"),
             (Error::default(), "something wrong happened"),

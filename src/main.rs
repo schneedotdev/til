@@ -43,6 +43,9 @@ struct Entry {
 
     #[clap(short, long, default_value = "default")]
     title: String,
+
+    #[clap(long, use_value_delimiter = true, default_value = "")]
+    tags: Vec<String>,
 }
 
 impl Entry {
@@ -54,6 +57,16 @@ impl Entry {
             .create(true)
             .open(&path)
             .map_err(|_| Error::CannotOpenOrCreatePath(path.clone()))?;
+
+        let file_size = file
+            .metadata()
+            .map_err(|_| Error::CannotReadFile(path.clone()))?
+            .len();
+
+        if file_size == 0 {
+            file.write_all(self.generate_meta().as_bytes())
+                .map_err(|_| Error::CannotWriteToFile(path.clone()))?;
+        }
 
         file.write_all(format!("- {}\n", self.content).as_bytes())
             .map_err(|_| Error::CannotWriteToFile(path.clone()))
@@ -80,6 +93,42 @@ impl Entry {
         }
 
         Ok(path)
+    }
+
+    /// Generates a metadata block for a note entry.
+    ///
+    /// This function will create a front matter block which includes the
+    /// title and tags of the note.
+    ///
+    /// ## Returns
+    ///
+    /// Returns a `String` containing the formatted metadata block.
+    ///
+    /// ## Examples
+    ///
+    /// ```
+    /// let entry = Entry {
+    ///     title: "Example Title".to_string(),
+    ///     tags: vec!["tag1".to_string(), "tag2".to_string()],
+    /// };
+    /// let meta = entry.generate_meta();
+    /// assert_eq!(meta, r#"---
+    /// title: "Example Title"
+    /// tags: [tag1, tag2]
+    /// ---
+    /// "#);
+    /// ```
+    fn generate_meta(&self) -> String {
+        format!(
+            r#"---
+title: "{}"
+tags: [{}]
+---
+
+"#,
+            self.title,
+            self.tags.join(", ")
+        )
     }
 
     fn retrieve_from(_search_params: SearchParams) {
