@@ -1,9 +1,7 @@
 mod error;
 
 use std::{
-    fs::{self, OpenOptions},
-    io::Write,
-    path::{Path, PathBuf},
+    fs::{self, OpenOptions}, io::Write, os::unix::fs::MetadataExt, path::{Path, PathBuf}
 };
 
 use chrono::{Datelike, Local};
@@ -53,13 +51,12 @@ impl Entry {
         let mut file = OpenOptions::new()
             .append(true)
             .create(true)
-            .open(path)
-            .expect("cannot open or create file");
+            .open(&path)
+            .map_err(|_| Error::CannotOpenOrCreatePath(path.clone()))?;
+
 
         file.write_all(format!("- {}\n", self.message).as_bytes())
-            .expect("cannot write to file");
-
-        Ok(())
+            .map_err(|_| Error::CannotWriteToFile(path.clone()))
     }
 
     fn build_path(&self) -> error::Result<PathBuf> {

@@ -1,4 +1,4 @@
-use std::fmt::Display;
+use std::{fmt::Display, path::PathBuf};
 
 type Message = String;
 type Directory = String;
@@ -9,6 +9,8 @@ pub(crate) enum Error {
     CannotFindDir(Directory),
     CannotCreateDir(Directory),
     CannotProcessArgs,
+    CannotOpenOrCreatePath(PathBuf),
+    CannotWriteToFile(PathBuf),
     Custom(Message),
     #[default]
     Default,
@@ -27,6 +29,12 @@ impl Display for Error {
                 f.write_fmt(format_args!("cannot create {} directory", dir))
             }
             Error::CannotProcessArgs => f.write_str("cannot process command-line arguments"),
+            Error::CannotOpenOrCreatePath(path) => {
+                f.write_fmt(format_args!("cannot open or create {}", path.display()))
+            }
+            Error::CannotWriteToFile(file) => {
+                f.write_fmt(format_args!("cannot write to {}", file.display()))
+            }
             Error::Custom(msg) => f.write_str(msg),
             Error::Default => f.write_str("something wrong happened"),
         }
@@ -64,6 +72,14 @@ mod tests {
             (
                 Error::CannotProcessArgs,
                 "cannot process command-line arguments",
+            ),
+            (
+                Error::CannotOpenOrCreatePath("src/test".into()),
+                "cannot open or create src/test",
+            ),
+            (
+                Error::CannotWriteToFile("src/test".into()),
+                "cannot write to src/test",
             ),
             ("custom message".into(), "custom message"),
             (Error::default(), "something wrong happened"),
