@@ -16,24 +16,20 @@ pub(crate) enum Error {
 
 pub type Result<T> = std::result::Result<T, Error>;
 
-impl Error {
-    pub(crate) fn message(&self) -> Message {
-        match self {
-            Error::CannotBuildPath => "cannot construct path".to_owned(),
-            Error::CannotFindDir(dir) => format!("cannot find {} directory", dir),
-            Error::CannotCreateDir(dir) => format!("cannot create {} directory", dir),
-            Error::CannotProcessArgs => "cannot process command-line arguments".to_owned(),
-            Error::Custom(msg) => msg.to_owned(),
-            Error::Default => "something wrong happened".to_owned(),
-        }
-    }
-}
-
 impl std::error::Error for Error {}
 
 impl Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "Error: {}", self.message())
+        match self {
+            Error::CannotBuildPath => f.write_str("cannot construct path"),
+            Error::CannotFindDir(dir) => f.write_fmt(format_args!("cannot find {} directory", dir)),
+            Error::CannotCreateDir(dir) => {
+                f.write_fmt(format_args!("cannot create {} directory", dir))
+            }
+            Error::CannotProcessArgs => f.write_str("cannot process command-line arguments"),
+            Error::Custom(msg) => f.write_str(msg),
+            Error::Default => f.write_str("something wrong happened"),
+        }
     }
 }
 
@@ -46,5 +42,35 @@ impl From<&str> for Error {
 impl From<String> for Error {
     fn from(value: String) -> Self {
         Error::Custom(value)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::error::Error;
+
+    #[test]
+    fn error_variants_return_proper_messages() {
+        let pairs: &[(Error, &str)] = &[
+            (Error::CannotBuildPath, "cannot construct path"),
+            (
+                Error::CannotFindDir("parent".to_string()),
+                "cannot find parent directory",
+            ),
+            (
+                Error::CannotCreateDir("./til/notes".to_string()),
+                "cannot create ./til/notes directory",
+            ),
+            (
+                Error::CannotProcessArgs,
+                "cannot process command-line arguments",
+            ),
+            ("custom message".into(), "custom message"),
+            (Error::default(), "something wrong happened"),
+        ];
+
+        pairs
+            .iter()
+            .for_each(|(err, msg)| assert_eq!(format!("{err}"), msg.to_string()));
     }
 }
