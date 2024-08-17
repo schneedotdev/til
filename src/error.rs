@@ -87,10 +87,7 @@ mod tests {
                 Error::CannotWriteToFile("src/test".into()),
                 "cannot write to src/test",
             ),
-            (
-                Error::CannotParseMetaData,
-                "cannot parse metadata",
-            ),
+            (Error::CannotParseMetaData, "cannot parse metadata"),
             (
                 Error::CannotReadFile("src/test".into()),
                 "cannot read file src/test",
