@@ -32,9 +32,9 @@ enum Command {
         entry: Entry,
     },
     /// recalls a note entry from a specific date
-    On {
+    Search {
         #[clap(flatten)]
-        search_params: SearchParams,
+        params: SearchParams,
     },
 }
 
@@ -190,17 +190,18 @@ tags: [{}]
         Ok(())
     }
 
-    fn retrieve_from(_search_params: SearchParams) {
+    fn retrieve_from(_params: SearchParams) {
         todo!()
     }
 }
 
 #[derive(Args, Debug)]
+#[group(required = true, multiple = false)]
 struct SearchParams {
-    #[arg(short, long, default_value = "")]
+    #[clap(long)]
     date: Option<String>,
-    #[arg(short, long, default_value = "")]
-    title: Option<String>,
+    #[clap(long)]
+    from: Option<String>,
 }
 
 fn main() -> error::Result<()> {
@@ -210,7 +211,7 @@ fn main() -> error::Result<()> {
         Some(command) => {
             match command {
                 Command::Add { entry } => entry.write()?,
-                Command::On { search_params } => Entry::retrieve_from(search_params),
+                Command::Search { params } => Entry::retrieve_from(params),
             };
 
             Ok(())
