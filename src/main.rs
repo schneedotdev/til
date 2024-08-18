@@ -206,8 +206,27 @@ tags: [{}]
         Ok(())
     }
 
-    fn retrieve_from(_params: SearchParams) {
-        todo!()
+    fn find_by_date(date: String) -> Option<String> {
+        let root_dir = find_root_dir()?;
+
+        let path = {
+            let mut path = Path::new(&root_dir).join(&date).join("default");
+            path.set_extension("md");
+            path
+        };
+
+        let directory = path
+            .parent()?;
+
+        if !directory.exists() {
+            return None;
+        }
+
+        fs::read_to_string(path).ok()
+    }
+
+    fn find_by_range(from: String, to: String) {
+        println!("find_by_range: {} {}", from, to);
     }
 }
 
@@ -227,7 +246,13 @@ fn main() -> error::Result<()> {
 
                         std::process::exit(1);
                     } else {
-                        Entry::retrieve_from(params);
+                        let mut entry = String::default();
+                        if let Some(date) = params.date {
+                            entry = Entry::find_by_date(date).unwrap();
+                        } else if let (Some(_from), Some(_to)) = (params.from, params.to) {
+                            
+                        }
+                        println!("{}", entry.trim())
                     }
                 }
             };
