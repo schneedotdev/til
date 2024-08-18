@@ -31,11 +31,27 @@ enum Command {
         #[clap(flatten)]
         entry: Entry,
     },
-    /// recalls a note entry from a specific date
+    /// Search for a note by an exact date or within a date range
     Search {
         #[clap(flatten)]
         params: SearchParams,
     },
+}
+
+#[derive(Args, Debug)]
+
+struct SearchParams {
+    /// Specify an exact date ("MM-DD-YYY")
+    #[arg(long, group("search"))]
+    date: Option<String>,
+
+    /// Specify the start of a date range, used with "--to" ("MM-DD-YYYY")
+    #[arg(long, group("search"), requires = "to")]
+    from: Option<String>,
+
+    /// Specify the end of a date range, used with "--from" ("MM-DD-YYYY")
+    #[arg(long, requires = "from")]
+    to: Option<String>,
 }
 
 #[derive(Args, Debug)]
@@ -195,15 +211,6 @@ tags: [{}]
     }
 }
 
-#[derive(Args, Debug)]
-#[group(required = true, multiple = false)]
-struct SearchParams {
-    #[clap(long)]
-    date: Option<String>,
-    #[clap(long)]
-    from: Option<String>,
-}
-
 fn main() -> error::Result<()> {
     let args = Cli::parse();
 
@@ -211,7 +218,18 @@ fn main() -> error::Result<()> {
         Some(command) => {
             match command {
                 Command::Add { entry } => entry.write()?,
-                Command::Search { params } => Entry::retrieve_from(params),
+                Command::Search { params } => {
+                    // handle exit case when "--date" is used with "--to"
+                    if params.date.is_some() && params.to.is_some() {
+                        eprintln!(
+                            "\x1b[1;31merror\x1b[0m: the argument '\x1b[33m--date <DATE>\x1b[0m' cannot be used with '\x1b[33m--to <TO>\x1b[0m'\n\n\x1b[4mUsage\x1b[0m: \x1b[1mtil search --date\x1b[0m <DATE>\n\nFor more information, try '\x1b[1m--help\x1b[0m'."
+                        );
+
+                        std::process::exit(1);
+                    } else {
+                        Entry::retrieve_from(params);
+                    }
+                }
             };
 
             Ok(())
