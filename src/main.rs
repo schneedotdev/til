@@ -83,7 +83,7 @@ impl Entry {
             path
         };
 
-        let directory = Path::new(&path)
+        let directory = path
             .parent()
             .ok_or(Error::CannotFindDir("parent".to_owned()))?;
 
