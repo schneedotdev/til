@@ -18,7 +18,7 @@ fn find_root_dir() -> Option<PathBuf> {
 }
 
 #[derive(Parser, Debug)]
-#[command(name = "til", version = "0.1.0", about = "✨ 'today i learned' is used to keep track of the important sh%t you want to remember ✨", long_about = None, arg_required_else_help = true)]
+#[command(name = "til", version, about = "✨ 'today i learned' is used to keep track of the important sh%t you want to remember ✨", long_about = None, arg_required_else_help = true)]
 struct Cli {
     #[command(subcommand)]
     command: Option<Command>,
