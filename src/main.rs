@@ -215,8 +215,7 @@ tags: [{}]
             path
         };
 
-        let directory = path
-            .parent()?;
+        let directory = path.parent()?;
 
         if !directory.exists() {
             return None;
@@ -248,9 +247,22 @@ fn main() -> error::Result<()> {
                     } else {
                         let mut entry = String::default();
                         if let Some(date) = params.date {
-                            entry = Entry::find_by_date(date).unwrap();
+                            // must use MM-DD-YYYY for date argument
+                            let re = Regex::new(r"^\d{1,2}-\d{1,2}-\d{4}$").unwrap();
+                            if !re.is_match(&date) {
+                                let err = Error::InvalidDateFormat;
+                                eprintln!("{err}");
+                                std::process::exit(1);
+                            }
+
+                            entry = match Entry::find_by_date(date.clone()) {
+                                Some(contents) => contents,
+                                None => {
+                                    eprintln!("no notes were found from {}", date);
+                                    std::process::exit(1);
+                                }
+                            };
                         } else if let (Some(_from), Some(_to)) = (params.from, params.to) {
-                            
                         }
                         println!("{}", entry.trim())
                     }
