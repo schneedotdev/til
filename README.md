@@ -29,7 +29,7 @@ til add "til is build with clap, a powerful command-line argument parser" --tags
 
 ### Search
 
-To search for a note, use the `search` command, specifying a date or a range of dates ("MM-DD-YYYY").
+To search for a note, use the `search` command, specifying a date <!--or a range of dates -->("MM-DD-YYYY").
 
 #### Date
 
@@ -39,13 +39,13 @@ Search for a note from a specific date:
 til search --date "8-18-2024"
 ```
 
-#### Range
+<!-- #### Range
 
 Search for a note within a range:
 
 ```
 til search --from "8-16-2024" --to "8-18-2024"
-```
+``` -->
 
 ## Configuration
 
