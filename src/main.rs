@@ -62,7 +62,7 @@ fn main() -> error::Result<()> {
                                 std::process::exit(1);
                             }
 
-                            entry = match Search::by_date(date.clone()) {
+                            entry = match Search::by_date(date.to_owned()) {
                                 Some(contents) => contents,
                                 None => {
                                     eprintln!("no notes were found from {}", date);
