@@ -4,7 +4,7 @@ type Message = String;
 type Directory = String;
 
 #[derive(Debug, Default)]
-pub(crate) enum Error {
+pub enum Error {
     CannotBuildPath,
     CannotFindDir(Directory),
     CannotCreateDir(Directory),
