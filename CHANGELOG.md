@@ -6,6 +6,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.4](https://github.com/schneedotdev/til/compare/v0.1.3...v0.1.4) - 2024-08-24
+
+### Added
+- separate modules, rename SearchParams to Search, and move find_by fn's within Search
+- pad the amount of chars of the filepath date
+- find entry by date validations
+
+### Fixed
+- by_date_range will be released at a later date
+- use .to_owned()
+- find_by_date -> by_date, find_by_range -> by_date_range
+- remove set version
+
+### Refactor
+- move code from else block
+- unnecessary Path::new()
+
 ## [0.1.3](https://github.com/schneedotdev/til/compare/v0.1.2...v0.1.3) - 2024-08-17
 
 ### Added
