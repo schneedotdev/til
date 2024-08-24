@@ -1,6 +1,6 @@
 [package]
 name = "today-i-learned"
-version = "0.1.3"
+version = "0.1.4"
 edition = "2021"
 authors = ["Brian Schnee"]
 license = "Unlicense OR MIT"
