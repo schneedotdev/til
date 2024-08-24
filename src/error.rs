@@ -4,7 +4,7 @@ type Message = String;
 type Directory = String;
 
 #[derive(Debug, Default)]
-pub(crate) enum Error {
+pub enum Error {
     CannotBuildPath,
     CannotFindDir(Directory),
     CannotCreateDir(Directory),
@@ -13,6 +13,7 @@ pub(crate) enum Error {
     CannotWriteToFile(PathBuf),
     CannotParseMetaData,
     CannotReadFile(PathBuf),
+    InvalidDateFormat,
     Custom(Message),
     #[default]
     Default,
@@ -41,6 +42,9 @@ impl Display for Error {
                 f.write_fmt(format_args!("cannot read file {}", file.display()))
             }
             Error::CannotParseMetaData => f.write_str("cannot parse metadata"),
+            Error::InvalidDateFormat => {
+                f.write_str("cannot parse date format, must use format MM-DD-YYYY")
+            }
             Error::Custom(msg) => f.write_str(msg),
             Error::Default => f.write_str("something wrong happened"),
         }

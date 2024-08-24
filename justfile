@@ -1,6 +1,10 @@
 alias c := create
 alias f := format
 
+# watch and install
+watch:
+    cargo watch -q -c -x "install --path ."
+
 # create a til entry
 create:
     cargo run -q -- that -m "new bullet point" -t "example"

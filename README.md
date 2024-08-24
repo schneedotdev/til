@@ -27,13 +27,25 @@ To store a note, use the `add` command, passing a message and _optional_ tags (c
 til add "til is build with clap, a powerful command-line argument parser" --tags "rust,clap,crates"
 ```
 
-### On
+### Search
 
-To retrieve a note, use the `on` command with the date and title parameters:
+To search for a note, use the `search` command, specifying a date <!--or a range of dates -->("MM-DD-YYYY").
+
+#### Date
+
+Search for a note from a specific date:
 
 ```
-til on --date "MM-DD-YYYY" --title "Title"
+til search --date "8-18-2024"
 ```
+
+<!-- #### Range
+
+Search for a note within a range:
+
+```
+til search --from "8-16-2024" --to "8-18-2024"
+``` -->
 
 ## Configuration
 
