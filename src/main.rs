@@ -44,35 +44,35 @@ fn main() -> error::Result<()> {
             match command {
                 Command::Add { entry } => entry.write()?,
                 Command::Search { search } => {
-                    // handle exit case when "--date" is used with "--to"
+                    // early exit when "--date" is used with "--to"
                     if search.date.is_some() && search.to.is_some() {
                         eprintln!(
                             "\x1b[1;31merror\x1b[0m: the argument '\x1b[33m--date <DATE>\x1b[0m' cannot be used with '\x1b[33m--to <TO>\x1b[0m'\n\n\x1b[4mUsage\x1b[0m: \x1b[1mtil search --date\x1b[0m <DATE>\n\nFor more information, try '\x1b[1m--help\x1b[0m'."
                         );
 
                         std::process::exit(1);
-                    } else {
-                        let mut entry = String::default();
-                        if let Some(date) = search.date {
-                            // must use MM-DD-YYYY for date argument
-                            let re = Regex::new(r"^\d{1,2}-\d{1,2}-\d{4}$").unwrap();
-                            if !re.is_match(&date) {
-                                let err = Error::InvalidDateFormat;
-                                eprintln!("{err}");
+                    }
+
+                    let mut entry = String::default();
+                    if let Some(date) = search.date {
+                        // must use MM-DD-YYYY for date argument
+                        let re = Regex::new(r"^\d{1,2}-\d{1,2}-\d{4}$").unwrap();
+                        if !re.is_match(&date) {
+                            let err = Error::InvalidDateFormat;
+                            eprintln!("{err}");
+                            std::process::exit(1);
+                        }
+
+                        entry = match Search::by_date(date.to_owned()) {
+                            Some(contents) => contents,
+                            None => {
+                                eprintln!("no notes were found from {}", date);
                                 std::process::exit(1);
                             }
-
-                            entry = match Search::by_date(date.to_owned()) {
-                                Some(contents) => contents,
-                                None => {
-                                    eprintln!("no notes were found from {}", date);
-                                    std::process::exit(1);
-                                }
-                            };
-                        } else if let (Some(_from), Some(_to)) = (search.from, search.to) {
-                        }
-                        println!("{}", entry.trim())
+                        };
+                    } else if let (Some(_from), Some(_to)) = (search.from, search.to) {
                     }
+                    println!("{}", entry.trim())
                 }
             };
 
