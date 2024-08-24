@@ -44,15 +44,6 @@ fn main() -> error::Result<()> {
             match command {
                 Command::Add { entry } => entry.write()?,
                 Command::Search { search } => {
-                    // early exit when "--date" is used with "--to"
-                    // if search.date.is_some() && search.to.is_some() {
-                    //     eprintln!(
-                    //         "\x1b[1;31merror\x1b[0m: the argument '\x1b[33m--date <DATE>\x1b[0m' cannot be used with '\x1b[33m--to <TO>\x1b[0m'\n\n\x1b[4mUsage\x1b[0m: \x1b[1mtil search --date\x1b[0m <DATE>\n\nFor more information, try '\x1b[1m--help\x1b[0m'."
-                    //     );
-
-                    //     std::process::exit(1);
-                    // }
-
                     let mut entry = String::default();
                     if let Some(date) = search.date {
                         // must use MM-DD-YYYY for date argument
@@ -71,8 +62,6 @@ fn main() -> error::Result<()> {
                             }
                         };
                     }
-                    // } else if let (Some(_from), Some(_to)) = (search.from, search.to) {
-                    // }
                     println!("{}", entry.trim())
                 }
             };

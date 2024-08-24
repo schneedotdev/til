@@ -9,14 +9,6 @@ pub struct Search {
     /// Specify an exact date ("MM-DD-YYY")
     #[clap(long, group("search"))]
     pub date: Option<String>,
-
-    // Specify the start of a date range, used with "--to" ("MM-DD-YYYY")
-    // #[clap(long, group("search"), requires = "to")]
-    // pub from: Option<String>,
-
-    // Specify the end of a date range, used with "--from" ("MM-DD-YYYY")
-    // #[clap(long, requires = "from")]
-    // pub to: Option<String>,
 }
 
 impl Search {
@@ -37,8 +29,4 @@ impl Search {
 
         fs::read_to_string(path).ok()
     }
-
-    // pub fn _by_date_range(from: String, to: String) {
-    //     println!("find_by_range: {} {}", from, to);
-    // }
 }
