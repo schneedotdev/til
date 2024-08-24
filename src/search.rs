@@ -20,7 +20,7 @@ pub struct Search {
 }
 
 impl Search {
-    pub fn find_by_date(date: String) -> Option<String> {
+    pub fn by_date(date: String) -> Option<String> {
         let root_dir = find_root_dir()?;
 
         let path = {
@@ -38,7 +38,7 @@ impl Search {
         fs::read_to_string(path).ok()
     }
 
-    pub fn _find_by_range(from: String, to: String) {
+    pub fn _by_date_range(from: String, to: String) {
         println!("find_by_range: {} {}", from, to);
     }
 }
