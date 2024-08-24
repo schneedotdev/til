@@ -90,7 +90,7 @@ impl Entry {
 
     fn build_path(&self) -> error::Result<PathBuf> {
         let time = Local::now();
-        let date = format!("{}-{}-{}", time.month(), time.day(), time.year());
+        let date = format!("{:02}-{:02}-{}", time.month(), time.day(), time.year());
 
         let root_dir = find_root_dir().ok_or(Error::CannotFindDir("root".to_owned()))?;
         let path = {
